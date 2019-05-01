@@ -9,30 +9,13 @@ var fs = require("fs");
 
 let userInput = process.argv.slice(3).join("+");
 console.log("User Input: " + userInput);
+
 let randomInput; 
 let randomAction;
 
-console.log("Global randomInput: " + randomInput);
-console.log("Global randomAction: " + randomAction);
+// console.log("Global randomInput1: " + randomInput);
+// console.log("Global randomAction2: " + randomAction);
 
-
-
-//----------------------------------------------------------
-//DO-WHAT-IT-SAYS
-
-fs.readFile("random.txt", "utf8", function(error, data) {
-    if (error) {
-      return console.log(error);
-    }
-    console.log(data);
-    var dataArr = data.trim().split(",");
-    // console.log(dataArr);
-    randomAction = dataArr[0].trim();
-    randomInput = dataArr[1].trim();
-
-    // console.log(randomAction);
-    // console.log(randomInput);
-  });
 
 
 //-------------------------------------------------
@@ -102,8 +85,7 @@ function bands(){
 //----------------------------------------------------------
 //USER INTERACTION
 
-if (process.argv[2] | randomAction === "spotify-this-song" && process.argv[3] === undefined) {
-    console.log("hi¨")
+if(process.argv[2] === "spotify-this-song" && process.argv[3] === undefined) {
     spotify
     .search({
         type: 'track',
@@ -119,12 +101,10 @@ if (process.argv[2] | randomAction === "spotify-this-song" && process.argv[3] ==
         console.log("not working " + err);
     });
 } 
-else if (process.argv[2] | randomAction === "spotify-this-song") {
-    console.log("h¨")
-    music(userInput | randomInput);
+else if (process.argv[2] === "spotify-this-song") {
+    music(userInput);
 } 
 else if (process.argv[2] === "movie-this" && process.argv[3] === undefined) {
-    console.log("this condition is not running");
     axios.get("http://www.omdbapi.com/?t=mr+nobody&y=&plot=short&apikey=trilogy").then(
         function (response) {
             // console.log(response);
@@ -145,6 +125,28 @@ else if (process.argv[2] === "movie-this") {
 }
 else if (process.argv[2] === "concert-this") {
     bands();
+}
+//----------------------------------------------------------
+//DO-WHAT-IT-SAYS
+else if(process.argv[2] === "do-what-it-says"){
+    fs.readFile("random.txt", "utf8", function(error, data) {
+        if (error) {
+            return console.log(error);
+        }
+        console.log(data);
+        var dataArr = data.trim().split(",");
+        randomAction = dataArr[0].trim();
+        userInput = dataArr[1].trim();
+
+        if(randomAction === "spotify-this-song"){
+            music(userInput);
+        } else if (randomAction === "movie-this"){
+            movie(userInput);
+        } else if( randomAction === "concert-this"){
+            bands(userInput);
+        }
+    });
+
 }
 
 
